@@ -1,7 +1,9 @@
 import React from 'react';
 import {mount, shallow} from 'enzyme';
 
-import GuessForm from './guess-form';
+
+import { GuessForm } from './guess-form';
+import { makeGuess } from '../actions';
 
 describe('<GuessList />', () => {
   it('Renders without crashing', () => {
@@ -9,18 +11,18 @@ describe('<GuessList />', () => {
   });
 
   it('Should fire the onMakeGuess callback when the form is submitted', () => {
-    const callback = jest.fn();
-    const wrapper = mount(<GuessForm onMakeGuess={callback} />);
-    const value = 10;
+    const dispatch = jest.fn();
+    const wrapper = mount(<GuessForm dispatch={dispatch} />);
+    const value = '10';
     wrapper.find('input[type="number"]').instance().value = value;
     wrapper.simulate('submit');
-    expect(callback).toHaveBeenCalledWith(value.toString());
+    expect(dispatch).toHaveBeenCalledWith(makeGuess(value));
   });
 
   it('Should reset the input when the form is submitted', () => {
-    const wrapper = mount(<GuessForm />);
+    const wrapper = mount(<GuessForm dispatch={() => {}} />);
     const input = wrapper.find('input[type="number"]');
-    input.instance().value = 10;
+    input.instance().value = '10';
     wrapper.simulate('submit');
     expect(input.instance().value).toEqual('');
   });
